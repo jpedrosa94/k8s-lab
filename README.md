@@ -1,8 +1,8 @@
 
-# P2P DevOps Assessment
+# Full Kubernetes Setup
 
 This repository contains the infrastructure and application code for deploying a web application using Kubernetes.
-It's managed through ArgoCD for GitOps, and provisioned using Terraform.
+It's managed through ArgoCD for GitOps, and provisioned using Terraform. The idea is to create a cluster ready for Production environment
 
 ## Structure
 
