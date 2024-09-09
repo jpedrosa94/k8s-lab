@@ -1,0 +1,102 @@
+name: "run tests & deploy to test"
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+    branches: [ master ]
+
+jobs:
+  rc-test:
+    if: contains(toJSON(github.head_ref), 'release/') || contains(toJSON(github.head_ref), 'hotfix/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'
+
+      - name: Run Unit Tests
+        run: go test main_test.go
+
+  rc-deploy:
+    needs: [ rc-test ]
+    runs-on: ubuntu-latest
+    environment: test
+    steps:
+      # 1. Setup
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'
+
+      # 2. Sets & print variables
+      - name: Sets variables
+        id: variables
+        run: |
+          git fetch --prune --prune-tags origin
+          
+          # 1. Get tags
+          LATEST_TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
+          TAG_LIST=($(echo $LATEST_TAG | tr '.' ' '))
+          [[ "${#TAG_LIST[@]}" -ne 2 ]] && echo "$RELEASE_VERSION is not a valid version" && exit 1
+          
+          # 2. Set release version
+          if [[ "$GITHUB_HEAD_REF" == release* ]]
+          then
+            RELEASE_VERSION=$(( TAG_LIST[0] + 1 )).$(( TAG_LIST[2] ));
+          else
+            RELEASE_VERSION=${TAG_LIST[0]}.$(( TAG_LIST[1] + 1));
+          fi
+          
+          # 3. Set var
+          IMAGE_TAG=${RELEASE_VERSION}-$(git rev-parse --short=4 HEAD)-rc
+          
+          # 4. Set var as env
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "IMAGE_REGISTRY=${{ vars.IMAGE_REGISTRY }}" >> $GITHUB_ENV
+
+      - name: Print variables
+        run: |
+          echo "IMAGE_TAG=$IMAGE_TAG"
+          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY"
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build image
+        run: docker build -t $IMAGE_REGISTRY:$IMAGE_TAG .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: 'docker.io/${{ env.IMAGE_REGISTRY }}:${{ env.IMAGE_TAG }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Push image
+        run: docker push $IMAGE_REGISTRY:$IMAGE_TAG
+
+      - name: Set variables
+        run: |
+          echo "FILE_PATH=charts/webapp/values-stg.yaml" >> $GITHUB_ENV
+
+      - name: Update image tag in YAML file
+        run: |
+          sed -i 's/^  tag: .*/  tag: '"${{ env.IMAGE_TAG }}"'/' ${{ env.FILE_PATH }}
+          cat charts/webapp/values-stg.yaml
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update image tag to ${{ env.IMAGE_TAG }}"
+          branch: master
+          file_pattern: ${{ env.FILE_PATH }}

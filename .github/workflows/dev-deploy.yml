@@ -1,0 +1,80 @@
+name: "deploy to dev"
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ develop ]
+
+env:
+  IMAGE_NAME: api
+
+concurrency:
+  group: ci-deploy-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dev-deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'
+
+      - name: Sets variables
+        id: variables
+        run: |
+          # 1. Set vars
+          IMAGE_REGISTRY="juliopedrosa/webapp"
+          IMAGE_TAG="dev-${{ github.run_number }}"
+
+          # 2. Set vars as env
+          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+      - name: Print variables
+        run: |
+          echo "IMAGE_TAG=$IMAGE_TAG"
+          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY"
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build image
+        run: docker build -t $IMAGE_REGISTRY:$IMAGE_TAG .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: 'docker.io/${{ env.IMAGE_REGISTRY }}:${{ env.IMAGE_TAG }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Push image
+        run: docker push $IMAGE_REGISTRY:$IMAGE_TAG
+
+      - name: Set variables
+        run: |
+          echo "FILE_PATH=charts/webapp/values-dev.yaml" >> $GITHUB_ENV
+
+      - name: Update image tag in YAML file
+        run: |
+          sed -i 's/^  tag: .*/  tag: '"${{ env.IMAGE_TAG }}"'/' ${{ env.FILE_PATH }}
+          cat charts/webapp/values-dev.yaml
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update image tag to ${{ env.IMAGE_TAG }}"
+          branch: master
+          file_pattern: ${{ env.FILE_PATH }}
