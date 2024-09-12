@@ -12,9 +12,6 @@ spec:
     path: charts/argocd-apps
     repoURL: https://github.com/jpedrosa94/k8s-lab.git
     targetRevision: {{ .Values.ref }}
-#  syncPolicy:
-#    automated:
-#      prune: true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -37,3 +34,22 @@ spec:
   syncPolicy:
     automated:
       prune: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingresses
+  namespace: argocd
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: charts/ingresses
+    repoURL: https://github.com/jpedrosa94/k8s-lab.git
+    targetRevision: {{ .Values.ref }}
+  syncPolicy:
+    automated:
+      prune: true
+
