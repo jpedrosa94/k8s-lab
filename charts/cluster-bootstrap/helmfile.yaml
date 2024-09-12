@@ -26,10 +26,10 @@ releases:
     version: "1.3.2"
     namespace: nginx-ingress
 
-  - name: kyverno
-    chart: kyverno/kyverno
-    version: "3.2.6"
-    namespace: kyverno
+  # - name: kyverno
+  #   chart: kyverno/kyverno
+  #   version: "3.2.6"
+  #   namespace: kyverno
 
   - name: metrics-server
     chart: metrics-server/metrics-server
