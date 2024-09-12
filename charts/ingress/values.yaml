@@ -11,8 +11,7 @@ ingresses:
         pathType: Prefix
         service:
             name: argocd-server
-            port:
-              name: https
+            port: 443
 
   # - name: grafana
   #   namespace: monitoring
