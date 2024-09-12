@@ -1,0 +1,39 @@
+redis-ha:
+  enabled: true
+
+controller:
+  replicas: 1
+
+repoServer:
+  containerSecurityContext:
+    runAsNonRoot: false
+  volumes:
+  - emptyDir: {}
+    name: helmfile-cmp-tmp
+  extraContainers:
+  - name: helmfile-plugin
+    image: travisghansen/argo-cd-helmfile:latest
+    command: [/var/run/argocd/argocd-cmp-server]
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 999
+    volumeMounts:
+      - mountPath: /var/run/argocd
+        name: var-files
+      - mountPath: /home/argocd/cmp-server/plugins
+        name: plugins
+      - mountPath: /tmp
+        name: helmfile-cmp-tmp
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+
+applicationSet:
+  replicas: 2
+
+configs:
+  repositories:
+    github:
+      url: https://github.com/jpedrosa94/k8s-lab.git
+      name: k8s-lab
+      type: git
