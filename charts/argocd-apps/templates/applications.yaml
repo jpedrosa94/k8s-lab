@@ -30,6 +30,10 @@ spec:
     path: charts/cluster-bootstrap
     repoURL: https://github.com/jpedrosa94/k8s-lab.git
     targetRevision: {{ .Values.ref }}
+    plugin:
+      parameters:
+        - name: HELMFILE_USE_CONTEXT_NAMESPACE
+          string: 'true'
   syncPolicy:
     automated:
       prune: true
