@@ -1,0 +1,39 @@
+repositories:
+#  - name: karpenter
+#    url: public.ecr.aws/karpenter
+#    oci: true
+#  - name: eks
+#    url: https://aws.github.io/eks-charts
+#  - name: external-dns
+#    url: https://kubernetes-sigs.github.io/external-dns
+  - name: nginx
+    url: https://helm.nginx.com/stable
+  - name: kyverno
+    url: https://kyverno.github.io/kyverno/
+  - name: metrics-server
+    url: https://kubernetes-sigs.github.io/metrics-server/
+
+releases:
+#      - name: karpenter
+#        chart: karpenter/karpenter
+#        version: "v0.32.4"
+#        namespace: karpenter
+#        values:
+#          - values/karpenter.yaml
+#
+  - name: nginx-ingress
+    chart: nginx/nginx-ingress
+    version: "1.4.1"
+    namespace: nginx-ingress
+    values:
+      - values/alb.yaml
+
+  - name: kyverno
+    chart: kyverno/kyverno
+    version: "3.2.6"
+    namespace: kyverno
+
+  - name: metrics-server
+    chart: metrics-server/metrics-server
+    version: "3.11.0"
+    namespace: monitoring

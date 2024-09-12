@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: webapp
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          - environment: dev
+          - environment: prod
+          - environment: stg
+  template:
+    metadata:
+      name: '{{`{{.environment}}`}}-noahsarc'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/jpedrosa94/k8s-lab.git
+        targetRevision: HEAD
+        path: charts/webapp
+        helm:
+          valueFiles:
+            - "values-{{`{{.environment}}`}}.yaml"
+      destination:
+        # Default base cluster
+        name: in-cluster
+        namespace: "{{`{{.environment}}`}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

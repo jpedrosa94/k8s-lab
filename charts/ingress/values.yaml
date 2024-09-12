@@ -1,0 +1,83 @@
+ingresses:
+  - name:  argocd-server-ingress
+    namespace: argocd
+    ingressClassName: nginx
+    host: argocd.example.com
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              name: https
+
+  # - name: grafana
+  #   namespace: monitoring
+  #   ingressClassName: nginx
+  #   host: grafana.fabiobartoli.com.br
+  #   annotations:
+  #     nginx.ingress.kubernetes.io/rewrite-target: /
+  #   paths:
+  #     - path: /
+  #       pathType: Prefix
+  #       service:
+  #         name: kube-prometheus-grafana
+  #         port: 80
+
+  # - name: harbor-ingress
+  #   namespace: harbor
+  #   ingressClassName: nginx
+  #   host: harbor.fabiobartoli.com.br
+  #   annotations:
+  #     ingress.kubernetes.io/proxy-body-size: "0"
+  #     ingress.kubernetes.io/ssl-redirect: "true"
+  #     nginx.ingress.kubernetes.io/proxy-body-size: "0"
+  #     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  #   paths:
+  #     - path: /api/
+  #       pathType: Prefix
+  #       service:
+  #         name: harbor-harbor-core
+  #         port: 80
+  #     - path: /service/
+  #       pathType: Prefix
+  #       service:
+  #         name: harbor-harbor-core
+  #         port: 80
+  #     - path: /v2/
+  #       pathType: Prefix
+  #       service:
+  #         name: harbor-harbor-core
+  #         port: 80
+  #     - path: /chartrepo/
+  #       pathType: Prefix
+  #       service:
+  #         name: harbor-harbor-core
+  #         port: 80
+  #     - path: /c/
+  #       pathType: Prefix
+  #       service:
+  #         name: harbor-harbor-core
+  #         port: 80
+  #     - path: /
+  #       pathType: Prefix
+  #       service:
+  #         name: harbor-harbor-portal
+  #         port: 80
+
+  # - name: kube-prometheus
+  #   namespace: monitoring
+  #   ingressClassName: nginx
+  #   host: prometheus.fabiobartoli.com.br
+  #   annotations:
+  #     nginx.ingress.kubernetes.io/rewrite-target: /
+  #   paths:
+  #     - path: /
+  #       pathType: Prefix
+  #       service:
+  #         name: kube-prometheus-kube-prome-prometheus
+  #         port: 9090
