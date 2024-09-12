@@ -20,7 +20,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    namespace: argocd
+    namespace: cluster-boostrap
     server: https://kubernetes.default.svc
   project: default
   source:
