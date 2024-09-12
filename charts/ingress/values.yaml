@@ -4,8 +4,7 @@ ingresses:
     ingressClassName: nginx
     # host: argocd.example.com
     annotations:
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /
     paths:
       - path: /
         pathType: Prefix
