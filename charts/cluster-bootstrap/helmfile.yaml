@@ -21,10 +21,10 @@ releases:
 #        values:
 #          - values/karpenter.yaml
 #
-  # - name: ingress-nginx
-  #   chart: ingress-nginx/ingress-nginx
-  #   version: "4.11.2"
-  #   namespace: ingress-nginx
+  - name: ingress-nginx
+    chart: ingress-nginx/ingress-nginx
+    version: "4.11.2"
+    namespace: ingress-nginx
   #   createNamespace: true
 
   # - name: kyverno
@@ -36,4 +36,4 @@ releases:
     chart: metrics-server/metrics-server
     version: "3.11.0"
     namespace: monitoring
-    createNamespace: true   
+    createNamespace: true
