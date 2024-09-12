@@ -25,15 +25,15 @@ releases:
   #   chart: ingress-nginx/ingress-nginx
   #   version: "4.11.2"
   #   namespace: ingress-nginx
-  #   createNamespace: true   
+  #   createNamespace: true
 
   # - name: kyverno
   #   chart: kyverno/kyverno
   #   version: "3.2.6"
   #   namespace: kyverno
 
-  # - name: metrics-server
-  #   chart: metrics-server/metrics-server
-  #   version: "3.11.0"
-  #   namespace: monitoring
-  #   createNamespace: true   
+  - name: metrics-server
+    chart: metrics-server/metrics-server
+    version: "3.11.0"
+    namespace: monitoring
+    createNamespace: true   
