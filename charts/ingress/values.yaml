@@ -2,7 +2,7 @@ ingresses:
   - name:  argocd-server-ingress
     namespace: argocd
     ingressClassName: nginx
-    host: argocd.example.com
+    # host: argocd.example.com
     annotations:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
