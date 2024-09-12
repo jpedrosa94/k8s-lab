@@ -46,7 +46,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: charts/ingresses
+    path: charts/ingress
     repoURL: https://github.com/jpedrosa94/k8s-lab.git
     targetRevision: {{ .Values.ref }}
   syncPolicy:
