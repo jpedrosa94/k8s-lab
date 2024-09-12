@@ -1,0 +1,54 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-sensitive-env-vars
+spec:
+  validationFailureAction: Enforce
+  failurePolicy: Fail
+  rules:
+    - name: disallow-sensitive-env-vars
+      match:
+        any:
+        - resources:
+            kinds:
+              - Pod
+      exclude:
+        resources:
+          namespaces:
+          - harbor
+          - ingress-nginx
+          - kube-system
+          - kyverno
+          - monitoring
+          - keda
+      validate:
+        message: "Secrets não devem ser montadas como variáveis!"
+        pattern:
+          spec:
+            containers:
+            - name: "*"
+              =(env):
+              - =(valueFrom):
+                  X(secretKeyRef): "null"
+    - name: secrets-not-from-envfrom
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+      exclude:
+        resources:
+          namespaces:
+          - harbor
+          - ingress-nginx
+          - kube-system
+          - kyverno
+          - monitoring
+      validate:
+        message: "Secrets não devem ser montadas como variáveis!"
+        pattern:
+          spec:
+            containers:
+            - name: "*"
+              =(envFrom):
+              - X(secretRef): "null"

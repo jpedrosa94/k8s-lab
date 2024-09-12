@@ -1,0 +1,25 @@
+package:
+  name: webapp
+  version: 0.1.0
+  epoch: 0
+  description: Build a golang application with melange
+  copyright:
+    - license: MIT
+  target-architecture:
+    - all
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/edge/main
+      - https://dl-cdn.alpinelinux.org/alpine/edge/community
+    keyring:
+      - ./melange.rsa.pub
+
+pipeline:
+  - uses: go/build
+    with:
+      modroot: .
+      packages: .
+      output: webapp
+  - uses: strip

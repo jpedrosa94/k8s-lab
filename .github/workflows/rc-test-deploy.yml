@@ -3,7 +3,7 @@ name: "run tests & deploy to test"
 on:
   pull_request:
     types: [ opened, synchronize, reopened ]
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   rc-test:
@@ -98,5 +98,5 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Update image tag to ${{ env.IMAGE_TAG }}"
-          branch: master
+          branch: main
           file_pattern: ${{ env.FILE_PATH }}

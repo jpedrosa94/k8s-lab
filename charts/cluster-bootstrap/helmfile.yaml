@@ -30,10 +30,10 @@ releases:
     namespace: ingress-nginx
   #   createNamespace: true
 
-  # - name: kyverno
-  #   chart: kyverno/kyverno
-  #   version: "3.2.6"
-  #   namespace: kyverno
+  - name: kyverno
+    chart: kyverno/kyverno
+    version: "3.2.6"
+    namespace: kyverno
 
   - name: metrics-server
     chart: metrics-server/metrics-server

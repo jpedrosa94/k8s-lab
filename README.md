@@ -81,7 +81,7 @@ git checkout -b feature/update-code
    4. Deploy in `dev`
 4. After check in `dev`, now you need to create a Release Candidate to be validated in a pre-prod environment
    1. From `develop` branch follow the steps:
-      1. Create a ***release*** PR (This PR will be executed to `master`):
+      1. Create a ***release*** PR (This PR will be executed to `main`):
       - The script will get the latest release version, calculate the release and branch name
       ```bash
       make release
@@ -97,12 +97,12 @@ git checkout -b feature/update-code
    2. Run vulnerability checks
    3. Build the new release candidate image
    4. Create a new Release on GitHub
-   5. And create a PR to synchronize `master` with `develop`
+   5. And create a PR to synchronize `main` with `develop`
 6. Merge the PR creted
 
 ##### Hotfix Flow
 
-1. Go to `master` branch and run:
+1. Go to `main` branch and run:
 - The Script will create a `hotfix/*` with any name that you choose and calculate hotfix version
 ```bash
 make hotfix

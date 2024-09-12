@@ -3,7 +3,7 @@ name: "run tests & deploy to prod"
 on:
   pull_request:
     types: [ closed ]
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   prod-test:
@@ -105,7 +105,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Update image tag to ${{ env.IMAGE_TAG }}"
-          branch: master
+          branch: main
           file_pattern: ${{ env.FILE_PATH }}
 
   create-release:
@@ -137,7 +137,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GH_TOKEN }}
 
-      - name: Open PR to align develop with master
+      - name: Open PR to align develop with main
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           RELEASE_VERSION: ${{ needs.prod-deploy.outputs.RELEASE_VERSION }}
@@ -146,8 +146,8 @@ jobs:
           git checkout -b $BRANCH_NAME
           git config --global user.email "bot@local"
           git config --global user.name "release[bot]"
-          git merge origin/master
-          git commit --allow-empty -am "Merge master into develop"
+          git merge origin/main
+          git commit --allow-empty -am "Merge main into develop"
           git push origin "$BRANCH_NAME"
 
           gh pr create --base develop --head "$BRANCH_NAME" --title "Merge - $RELEASE_VERSION" --fill

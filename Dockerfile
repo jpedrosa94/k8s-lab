@@ -9,12 +9,12 @@ RUN useradd -u 1001 nonroot
 WORKDIR /app
 
 # Copy the entire application source code
-COPY . .
+COPY app/ .
 
 # Compile the application during build and statically link the binary
 RUN go build \
  -ldflags="-linkmode external -extldflags -static" \
- -tags netgo -o webapp main.go
+ -tags netgo -o noahsarc main.go
 
 # Stage 2: Deployable Image
 # Use a minimal scratch image as the base image for the final image
@@ -24,7 +24,7 @@ FROM scratch
 COPY --from=build /etc/passwd /etc/passwd
 
 # Copy the compiled application binary from the build stage to the final image
-COPY --from=build /app/webapp .
+COPY --from=build /app/noahsarc .
 
 # Use the non-root user created in the build stage
 USER nonroot
@@ -33,7 +33,7 @@ USER nonroot
 EXPOSE 3000
 
 # Command to run the application
-CMD ["./webapp"]
+CMD ["./noahsarc"]
 
 # Add a health check to ensure the app is running correctly
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
