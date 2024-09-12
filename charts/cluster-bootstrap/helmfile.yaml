@@ -30,11 +30,6 @@ releases:
     namespace: ingress-nginx
     createNamespace: true
 
-  - name: kyverno-policies
-    chart: kyverno/kyverno-policies
-    version: 3.2.5
-    namespace: kyverno
-    
   - name: kyverno
     chart: kyverno/kyverno
     version: "3.2.6"
