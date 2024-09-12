@@ -5,6 +5,7 @@ ingresses:
     # host: argocd.example.com
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     paths:
       - path: /
         pathType: Prefix
