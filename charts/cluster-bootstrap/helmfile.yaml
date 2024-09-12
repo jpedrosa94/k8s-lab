@@ -13,6 +13,9 @@ repositories:
   - name: metrics-server
     url: https://kubernetes-sigs.github.io/metrics-server/
 
+helmDefaults:
+  createNamespace: true
+
 releases:
 #      - name: karpenter
 #        chart: karpenter/karpenter
