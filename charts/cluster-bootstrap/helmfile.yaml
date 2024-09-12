@@ -39,4 +39,3 @@ releases:
     chart: metrics-server/metrics-server
     version: "3.11.0"
     namespace: monitoring
-    createNamespace: true
