@@ -5,9 +5,6 @@
 # Exclude dependencies.
 .idea/
 
-# Exclude "build-time" ignore files.
-.dockerignore
-
 # Local .terraform directories
 **/.terraform/*
 
@@ -45,3 +42,10 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+*.tar
+*.pub
+*.key
+*.rsa
+*.json
+**/packages/

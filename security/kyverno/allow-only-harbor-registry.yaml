@@ -14,13 +14,12 @@ spec:
     exclude:
       resources:
         namespaces:
-        - harbor
-        - ingress-nginx
-        - kube-system
-        - kyverno
-        - monitoring
-        - locust
-        - keda
+          - argocd
+          - cluster-bootstrap
+          - kube-system
+          - kyverno
+          - monitoring
+          - ingress-nginx
     validate:
       message: "Utilize imagens do Registry Harbor!"
       pattern:

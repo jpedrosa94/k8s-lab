@@ -1,12 +1,10 @@
 package:
-  name: webapp
+  name: noahsarc
   version: 0.1.0
   epoch: 0
   description: Build a golang application with melange
   copyright:
     - license: MIT
-  target-architecture:
-    - all
 
 environment:
   contents:
@@ -21,5 +19,5 @@ pipeline:
     with:
       modroot: .
       packages: .
-      output: webapp
+      output: noahsarc
   - uses: strip
